@@ -146,6 +146,9 @@
     <ClCompile Include="Lib\LConsoleScreen.cpp" />
     <ClCompile Include="Src\Game.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Managers\InputManager.cpp" />
+    <ClCompile Include="Src\System\BoardSystem.cpp" />
+    <ClCompile Include="Src\System\PointerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\LConsoleScreen.hpp" />
@@ -154,9 +157,14 @@
     <ClInclude Include="Lib\universal_sleep.hpp" />
     <ClInclude Include="Lib\Vec2.hpp" />
     <ClInclude Include="Src\Components\Board.h" />
+    <ClInclude Include="Src\Components\Components.h" />
     <ClInclude Include="Src\Components\Piece.h" />
     <ClInclude Include="Src\Components\Pointer.h" />
     <ClInclude Include="Src\Game.h" />
+    <ClInclude Include="Src\Managers\InputManager.h" />
+    <ClInclude Include="Src\System\BoardSystem.h" />
+    <ClInclude Include="Src\System\PointerSystem.h" />
+    <ClInclude Include="Src\System\Systems.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

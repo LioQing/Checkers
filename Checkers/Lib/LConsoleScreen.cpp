@@ -93,6 +93,7 @@ void lio::LConsoleScreen::SetBackgroundColor(short col)
 
 void lio::LConsoleScreen::Draw(int x, int y, unsigned char c, short col)
 {
+	if (x < 0 || x >= m_size.X || y < 0 || y >= m_size.Y) return;
 	if (x >= 0 && x < m_size.X && y >= 0 && y < m_size.Y)
 	{
 		m_bufscrn[y * m_size.X + x].Char.AsciiChar = c;
@@ -121,6 +122,7 @@ void lio::LConsoleScreen::Clear()
 
 void lio::LConsoleScreen::DrawString(int x, int y, std::string c, short col)
 {
+	if (x < 0 || x >= m_size.X || y < 0 || y >= m_size.Y) return;
 	for (size_t i = 0; i < c.size(); i++)
 	{
 		m_bufscrn[y * m_size.X + x + i].Char.UnicodeChar = c[i];
@@ -130,6 +132,7 @@ void lio::LConsoleScreen::DrawString(int x, int y, std::string c, short col)
 
 void lio::LConsoleScreen::DrawStringAlpha(int x, int y, std::string c, short col)
 {
+	if (x < 0 || x >= m_size.X || y < 0 || y >= m_size.Y) return;
 	for (size_t i = 0; i < c.size(); i++)
 	{
 		if (c[i] != ' ')

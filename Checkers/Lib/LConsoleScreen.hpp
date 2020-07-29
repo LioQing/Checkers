@@ -55,6 +55,7 @@ namespace lio
 
 	enum PIXEL_TYPE
 	{
+		PIXEL_NONE = 0x20,
 		PIXEL_SOLID = 0xdb,
 		PIXEL_THREEQUARTERS = 0xb2,
 		PIXEL_HALF = 0xb1,

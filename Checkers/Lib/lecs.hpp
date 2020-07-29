@@ -9,6 +9,8 @@
 #include <bitset>
 #include <queue>
 
+#include <LConsoleScreen.hpp>
+
 // unit of time of difference in time between the previous frame the next frame
 // to be passed into systems
 // can be ignored if not used
@@ -678,6 +680,10 @@ namespace lecs
 
 		// function to be called everytime system manager is updated
 		virtual void Update(EntityManager*, EventManager*, DeltaTime) {}
+
+		virtual void EarlyUpdate(EntityManager*, EventManager*, DeltaTime) {}
+		virtual void LateUpdate(EntityManager*, EventManager*, DeltaTime) {}
+		virtual void Draw(EntityManager*, lio::TConsoleScreen* tcs) {}
 	};
 
 	// system manager class to manager all systems
@@ -783,6 +789,22 @@ namespace lecs
 				s->Update(entity_manager, event_manager, delta_time);
 			}
 		}
+
+		void EarlyUpdate(DeltaTime delta_time)
+		{
+			for (auto& s : systems)
+			{
+				s->EarlyUpdate(entity_manager, event_manager, delta_time);
+			}
+		}
+
+		void LateUpdate(DeltaTime delta_time)
+		{
+			for (auto& s : systems)
+			{
+				s->LateUpdate(entity_manager, event_manager, delta_time);
+			}
+		}
 	};
 
 	// ecs managers class to store all managers
@@ -800,6 +822,19 @@ namespace lecs
 			entity_manager = new EntityManager();
 			event_manager = new EventManager(entity_manager);
 			system_manager = new SystemManager(entity_manager, event_manager);
+		}
+
+		ECSManagers& operator=(const ECSManagers& other)
+		{
+			if (entity_manager) delete entity_manager;
+			if (event_manager) delete event_manager;
+			if (system_manager) delete system_manager;
+
+			entity_manager = other.entity_manager;
+			event_manager = other.event_manager;
+			system_manager = other.system_manager;
+
+			return *this;
 		}
 
 		// update all ecs managers
