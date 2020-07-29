@@ -4,7 +4,7 @@
 #include <LConsoleScreen.hpp>
 #include <lecs.hpp>
 
-#include "Managers/InputManager.h"
+#include "Managers/Managers.h"
 
 class Game
 {
@@ -13,8 +13,11 @@ private:
 	lio::TConsoleScreen m_tcs;
 	lecs::ECSManagers m_ecsman;
 	InputManager m_inputman;
+	PieceManager m_pieceman;
 
 	std::atomic_bool finished;
+
+	DeltaTime m_delta_time;
 
 public:
 
@@ -29,4 +32,5 @@ public:
 	InputManager& InputMan();
 
 	bool HasFinished();
+	lio::TConsoleScreen& TCS();
 };

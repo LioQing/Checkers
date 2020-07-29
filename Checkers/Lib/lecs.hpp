@@ -676,14 +676,14 @@ namespace lecs
 	public:
 
 		// function to be called when the system is added to system manager
-		virtual void Init(EntityManager*, EventManager*, SystemManager*) {}
+		virtual void Init(EntityManager&, EventManager&, SystemManager&) {}
 
 		// function to be called everytime system manager is updated
-		virtual void Update(EntityManager*, EventManager*, DeltaTime) {}
+		virtual void Update(EntityManager&, EventManager&, DeltaTime) {}
 
-		virtual void EarlyUpdate(EntityManager*, EventManager*, DeltaTime) {}
-		virtual void LateUpdate(EntityManager*, EventManager*, DeltaTime) {}
-		virtual void Draw(EntityManager*, lio::TConsoleScreen* tcs) {}
+		virtual void EarlyUpdate(EntityManager&, EventManager&, DeltaTime) {}
+		virtual void LateUpdate(EntityManager&, EventManager&, DeltaTime) {}
+		virtual void Draw(EntityManager&, lio::TConsoleScreen& tcs) {}
 	};
 
 	// system manager class to manager all systems
@@ -758,7 +758,7 @@ namespace lecs
 			std::unique_ptr<System> u_ptr{ s };
 			systems.resize(systems.size() + 1);
 			systems.at(GetSystemID<T>()) = std::move(u_ptr);
-			s->Init(entity_manager, event_manager, this);
+			s->Init(*entity_manager, *event_manager, *this);
 
 			logger.AddLog
 			(
@@ -786,7 +786,7 @@ namespace lecs
 		{
 			for (auto& s : systems)
 			{
-				s->Update(entity_manager, event_manager, delta_time);
+				s->Update(*entity_manager, *event_manager, delta_time);
 			}
 		}
 
@@ -794,7 +794,7 @@ namespace lecs
 		{
 			for (auto& s : systems)
 			{
-				s->EarlyUpdate(entity_manager, event_manager, delta_time);
+				s->EarlyUpdate(*entity_manager, *event_manager, delta_time);
 			}
 		}
 
@@ -802,7 +802,7 @@ namespace lecs
 		{
 			for (auto& s : systems)
 			{
-				s->LateUpdate(entity_manager, event_manager, delta_time);
+				s->LateUpdate(*entity_manager, *event_manager, delta_time);
 			}
 		}
 	};

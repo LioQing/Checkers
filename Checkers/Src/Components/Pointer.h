@@ -14,6 +14,7 @@ struct Pointer : public lecs::Component
 		MV_DOWN,
 	};
 
+	bool active;
 	lio::Vec2i pos;
 
 	static const int key_cd = 2.5e5;
@@ -21,8 +22,11 @@ struct Pointer : public lecs::Component
 	std::array<int, 4> cd_count;
 	std::array<bool, 4> cd_stage2;
 
+	bool select_key_down;
+	lecs::Entity* selected_piece;
+
 	Pointer(lio::Vec2i init_pos)
-		: pos(init_pos)
+		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false)
 	{
 		cd_count.fill(0);
 		cd_stage2.fill(false);

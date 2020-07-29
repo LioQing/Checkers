@@ -5,9 +5,9 @@
 
 extern Game game;
 
-void PointerSystem::Update(lecs::EntityManager* eman, lecs::EventManager* evman, DeltaTime dt)
+void PointerSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManager& evman, DeltaTime dt)
 {
-	for (auto& e : eman->EntityFilter<Pointer>().entities)
+	for (auto& e : eman.EntityFilter<Pointer>().entities)
 	{
 		auto& board = game.board->GetComponent<Board>();
 		auto& pointer = e->GetComponent<Pointer>();
@@ -71,9 +71,9 @@ void PointerSystem::Update(lecs::EntityManager* eman, lecs::EventManager* evman,
 	}
 }
 
-void PointerSystem::Draw(lecs::EntityManager* eman, lio::TConsoleScreen* tcs)
+void PointerSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 {
-	for (auto& e : eman->EntityFilter<Pointer>().entities)
+	for (auto& e : eman.EntityFilter<Pointer>().entities)
 	{
 		auto& board = game.board->GetComponent<Board>();
 		auto& pointer = e->GetComponent<Pointer>();
@@ -92,7 +92,7 @@ void PointerSystem::Draw(lecs::EntityManager* eman, lio::TConsoleScreen* tcs)
 				auto tx = board.pos.x + pointer.pos.x * board.tile_size + x;
 				auto ty = board.pos.y + pointer.pos.y * board.tile_size + y;
 
-				tcs->Draw(tx, ty, lio::PIXEL_THREEQUARTERS, lio::FG_GREEN + col);
+				tcs.Draw(tx, ty, lio::PIXEL_THREEQUARTERS, lio::FG_GREEN + col);
 			}
 		}
 	}

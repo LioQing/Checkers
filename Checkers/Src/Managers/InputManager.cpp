@@ -6,33 +6,33 @@
 
 extern Game game;
 
-SafeKey::SafeKey()
+InputManager::SafeKey::SafeKey()
 	: m_pressed(false)
 {
 }
 
-SafeKey::SafeKey(bool init)
+InputManager::SafeKey::SafeKey(bool init)
 	: m_pressed(init)
 {
 }
 
-SafeKey::SafeKey(const SafeKey& k)
+InputManager::SafeKey::SafeKey(const SafeKey& k)
 {
 	m_pressed.store(k.m_pressed.load());
 }
 
-SafeKey& SafeKey::operator=(const SafeKey& k)
+InputManager::SafeKey& InputManager::SafeKey::operator=(const SafeKey& k)
 {
 	m_pressed.store(k.m_pressed.load());
 	return *this;
 }
 
-bool SafeKey::Load()
+bool InputManager::SafeKey::Load()
 {
 	return m_pressed.load();
 }
 
-void SafeKey::Store(bool val)
+void InputManager::SafeKey::Store(bool val)
 {
 	m_pressed.store(val);
 }
@@ -70,6 +70,11 @@ void InputManager::AsyncKeyThread()
 			m_keystates.at(KEY_DOWN).Store(true);
 		else
 			m_keystates.at(KEY_DOWN).Store(false);
+
+		if (GetAsyncKeyState(VK_RETURN))
+			m_keystates.at(KEY_RETURN).Store(true);
+		else
+			m_keystates.at(KEY_RETURN).Store(false);
 	}
 }
 

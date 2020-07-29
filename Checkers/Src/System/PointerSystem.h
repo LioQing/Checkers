@@ -4,6 +4,6 @@
 
 struct PointerSystem : public lecs::System
 {
-	void Update(lecs::EntityManager* eman, lecs::EventManager* evman, DeltaTime dt) override;
-	void Draw(lecs::EntityManager* eman, lio::TConsoleScreen* tcs) override;
+	void EarlyUpdate(lecs::EntityManager& eman, lecs::EventManager& evman, DeltaTime dt) override;
+	void Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs) override;
 };
