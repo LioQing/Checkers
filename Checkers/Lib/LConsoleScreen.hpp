@@ -139,6 +139,9 @@ namespace lio
 
 		void Init(int width, int height, int size = 16, std::string title = "TConsoleScreen", short background_col = 0x0000);
 
+		void SetResolution(int width, int height);
+		COORD GetResolution();
+
 		/* DRAW METHODS */
 
 		void Draw(int x, int y, unsigned char c = 0xdb, short col = 0x000F) override;

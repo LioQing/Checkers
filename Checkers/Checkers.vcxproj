@@ -149,7 +149,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lib\LConsoleScreen.hpp" />
+    <ClInclude Include="Lib\lecs.hpp" />
+    <ClInclude Include="Lib\Matrix.hpp" />
     <ClInclude Include="Lib\universal_sleep.hpp" />
+    <ClInclude Include="Lib\Vec2.hpp" />
+    <ClInclude Include="Src\Components\Board.h" />
+    <ClInclude Include="Src\Components\Piece.h" />
+    <ClInclude Include="Src\Components\Pointer.h" />
     <ClInclude Include="Src\Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

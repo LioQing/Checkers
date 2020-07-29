@@ -416,6 +416,17 @@ void lio::TConsoleScreen::Init(int width, int height, int size, std::string titl
 	md_size = { (short)width, (short)height };
 }
 
+void lio::TConsoleScreen::SetResolution(int width, int height)
+{
+	LConsoleScreen::SetResolution(width / 2, height);
+	md_size = { (short)width, (short)height };
+}
+
+COORD lio::TConsoleScreen::GetResolution()
+{
+	return md_size;
+}
+
 void lio::TConsoleScreen::Draw(int x, int y, unsigned char c, short col)
 {
 	LConsoleScreen::Draw(x * 2, y, c, col);
