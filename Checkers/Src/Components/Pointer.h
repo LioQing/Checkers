@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <Vec2.hpp>
 #include <lecs.hpp>
 
@@ -24,10 +25,14 @@ struct Pointer : public lecs::Component
 
 	bool select_key_down;
 	lecs::Entity* selected_piece;
+	std::vector<lio::Vec2i> possible_moves;
 
-	Pointer(lio::Vec2i init_pos)
-		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false)
+	uint32_t id;
+
+	Pointer(lio::Vec2i init_pos, uint32_t id)
+		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false), id(id)
 	{
+		possible_moves.clear();
 		cd_count.fill(0);
 		cd_stage2.fill(false);
 	}

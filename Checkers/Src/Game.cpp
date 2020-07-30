@@ -17,13 +17,16 @@ void Game::Init(int width, int height, int size, short background_col)
 	m_ecsman.system_manager->AddSystem<PieceActionSystem>();
 
 	board = &m_ecsman.entity_manager->AddEntity();
-	board->AddComponent<Board>(lio::Vec2i(5, 3), 10, 10, 9);
+	board->AddComponent<Board>(lio::Vec2i(5, 3), 8, 8, 11);
+
+	lecs::Entity* player = &m_ecsman.entity_manager->AddEntity();
+	player->AddComponent<Player>(lio::FG_DARK_RED, lio::FG_RED, true);
 
 	lecs::Entity* pointer = &m_ecsman.entity_manager->AddEntity();
-	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5));
+	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5), player->id);
 	pointer->GetComponent<Pointer>().active = true;
 
-	m_pieceman.SetBoard(*m_ecsman.entity_manager);
+	m_pieceman.SetBoard(*m_ecsman.entity_manager, player->id);
 }
 
 void Game::Update(DeltaTime dt)

@@ -16,6 +16,7 @@ void PointerSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManager& e
 		{
 			auto pressed = false;
 
+			// Corr key actions
 			if (game.InputMan().GetKeyState(k))
 			{
 				if (pointer.cd_count.at(mv) == 0)
@@ -73,6 +74,7 @@ void PointerSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManager& e
 
 void PointerSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 {
+	// Draw pointer
 	for (auto& e : eman.EntityFilter<Pointer>().entities)
 	{
 		auto& board = game.board->GetComponent<Board>();

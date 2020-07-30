@@ -161,6 +161,7 @@
     <ClInclude Include="Src\Components\Board.h" />
     <ClInclude Include="Src\Components\Components.h" />
     <ClInclude Include="Src\Components\Piece.h" />
+    <ClInclude Include="Src\Components\Player.h" />
     <ClInclude Include="Src\Components\Pointer.h" />
     <ClInclude Include="Src\Game.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />

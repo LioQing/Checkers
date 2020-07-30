@@ -11,5 +11,5 @@ private:
 
 public:
 
-	void SetBoard(lecs::EntityManager& eman);
+	void SetBoard(lecs::EntityManager& eman, uint32_t id);
 };
