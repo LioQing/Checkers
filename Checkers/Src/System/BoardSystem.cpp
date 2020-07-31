@@ -17,7 +17,10 @@ void BoardSystem::LateUpdate(lecs::EntityManager& eman, lecs::EventManager& evma
 		{
 			auto& piece = e2->GetComponent<Piece>();
 
-			board.board.At(piece.pos.x, piece.pos.y) = piece.player_id;
+			if (piece.is_king)
+				board.board.At(piece.pos.x, piece.pos.y) = -piece.player_id;
+			else
+				board.board.At(piece.pos.x, piece.pos.y) = piece.player_id;
 		}
 	}
 }
@@ -57,27 +60,66 @@ void BoardSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 				);
 
 				// Draw chess
-				if (board.board.At(x, y) != 0)
+				if (abs(board.board.At(x, y)) != 0)
 				{
-					auto& player = eman.GetEntity(board.board.At(x, y)).GetComponent<Player>();
+					auto& player = eman.GetEntity(abs(board.board.At(x, y))).GetComponent<Player>();
 
 					if (active_ptr->selected_piece) tcs.DrawString(200, 2, "HL");
 
+					auto c_col = col;
+					auto k_col = col;
 					if (active_ptr->selected_piece && active_ptr->selected_piece->GetComponent<Piece>().pos == lio::Vec2i(x, y))
 					{
-						col += player.hl_col;
+						c_col += player.hl_col;
+						
+						if (player.hl_col == lio::FG_YELLOW)
+							k_col += lio::FG_DARK_GREY;
+						else
+							k_col += lio::FG_YELLOW;
 					}
 					else
 					{
-						col += player.col;
+						c_col += player.col;
+						if (player.hl_col == lio::FG_YELLOW)
+							k_col += lio::FG_BLACK;
+						else
+							k_col += lio::FG_DARK_YELLOW;
 					}
 
 					tcs.FillCircle(
 						board.pos.x + x * board.tile_size + board.tile_size / 2,
 						board.pos.y + y * board.tile_size + board.tile_size / 2,
 						board.tile_size / 2 - 1,
-						lio::PIXEL_SOLID, col
+						lio::PIXEL_SOLID, c_col
 					);
+
+					if (board.board.At(x, y) < 0)
+					{
+						tcs.DrawTriangle(
+							board.pos.x + x * board.tile_size + board.tile_size / 2,
+							board.pos.y + y * board.tile_size + 3 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + 3 * board.tile_size / 8,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + 5 * board.tile_size / 8,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							lio::PIXEL_SOLID, k_col);
+						tcs.DrawTriangle(
+							board.pos.x + x * board.tile_size + 11 * board.tile_size / 16,
+							board.pos.y + y * board.tile_size + 3 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + board.tile_size / 2,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + 11 * board.tile_size / 16,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							lio::PIXEL_SOLID, k_col);
+						tcs.DrawTriangle(
+							board.pos.x + x * board.tile_size + 5 * board.tile_size / 16,
+							board.pos.y + y * board.tile_size + 3 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + board.tile_size / 2,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							board.pos.x + x * board.tile_size + 5 * board.tile_size / 16,
+							board.pos.y + y * board.tile_size + 5 * board.tile_size / 8,
+							lio::PIXEL_SOLID, k_col);
+					}
 				}
 			}
 		}

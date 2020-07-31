@@ -38,13 +38,33 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 				{
 					pointer.selected_piece = e2;
 
-					if (piece.pos.x != board.board.width - 1 && board.board.At(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1)) == 0)
+					if (piece.pos.x != board.board.width - 1 && 
+						piece.pos.y != (player.up ? 0 : board.board.height - 1) &&
+						board.board.At(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1)) == 0)
 					{
 						pointer.possible_moves.push_back(lio::Vec2i(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1)));
 					}
-					if (piece.pos.x !=  0 && board.board.At(piece.pos.x - 1, piece.pos.y + (player.up ? -1 : 1)) == 0)
+					if (piece.pos.x !=  0 && 
+						piece.pos.y != (player.up ? 0 : board.board.height - 1) &&
+						board.board.At(piece.pos.x - 1, piece.pos.y + (player.up ? -1 : 1)) == 0)
 					{
 						pointer.possible_moves.push_back(lio::Vec2i(piece.pos.x - 1, piece.pos.y + (player.up ? -1 : 1)));
+					}
+
+					if (!piece.is_king) break;
+
+					// King selection
+					if (piece.pos.x != board.board.width - 1 &&
+						piece.pos.y != (!player.up ? 0 : board.board.height - 1) &&
+						board.board.At(piece.pos.x + 1, piece.pos.y + (!player.up ? -1 : 1)) == 0)
+					{
+						pointer.possible_moves.push_back(lio::Vec2i(piece.pos.x + 1, piece.pos.y + (!player.up ? -1 : 1)));
+					}
+					if (piece.pos.x != 0 &&
+						piece.pos.y != (!player.up ? 0 : board.board.height - 1) &&
+						board.board.At(piece.pos.x - 1, piece.pos.y + (!player.up ? -1 : 1)) == 0)
+					{
+						pointer.possible_moves.push_back(lio::Vec2i(piece.pos.x - 1, piece.pos.y + (!player.up ? -1 : 1)));
 					}
 				}
 				// Deselect
@@ -65,13 +85,22 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 			continue;
 		}
 
+		auto& s_piece = pointer.selected_piece->GetComponent<Piece>();
+
 		for (auto& poss_mv : pointer.possible_moves)
 		{
 			if (poss_mv == pointer.pos)
 			{
 				assert(pointer.selected_piece && "Do not have selected piece, but have possible moves.");
 
-				pointer.selected_piece->GetComponent<Piece>().pos = poss_mv;
+				// Move
+				s_piece.pos = poss_mv;
+
+				// Become king
+				if (s_piece.pos.y == (eman.GetEntity(s_piece.player_id).GetComponent<Player>().up ? 0 : board.board.height - 1))
+					s_piece.is_king = true;
+
+				// Reset pointer
 				pointer.selected_piece = nullptr;
 				pointer.possible_moves.clear();
 				break;

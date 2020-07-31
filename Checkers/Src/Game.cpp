@@ -20,7 +20,7 @@ void Game::Init(int width, int height, int size, short background_col)
 	board->AddComponent<Board>(lio::Vec2i(5, 3), 8, 8, 11);
 
 	lecs::Entity* player = &m_ecsman.entity_manager->AddEntity();
-	player->AddComponent<Player>(lio::FG_DARK_RED, lio::FG_RED, true);
+	player->AddComponent<Player>(lio::FG_DARK_YELLOW, lio::FG_YELLOW, false);
 
 	lecs::Entity* pointer = &m_ecsman.entity_manager->AddEntity();
 	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5), player->id);
@@ -47,7 +47,7 @@ void Game::Draw()
 	m_ecsman.system_manager->GetSystem<PointerSystem>().Draw(*m_ecsman.entity_manager, m_tcs);
 
 	// Show FPS
-	m_tcs.DrawString(0, 0, std::to_string(m_delta_time), lio::FG_WHITE);
+	m_tcs.DrawString(0, 0, std::to_string(1e6 / m_delta_time), lio::FG_WHITE);
 
 	m_tcs.Display();
 }
