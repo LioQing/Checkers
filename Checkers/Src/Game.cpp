@@ -19,14 +19,21 @@ void Game::Init(int width, int height, int size, short background_col)
 	board = &m_ecsman.entity_manager->AddEntity();
 	board->AddComponent<Board>(lio::Vec2i(5, 3), 8, 8, 11);
 
-	lecs::Entity* player = &m_ecsman.entity_manager->AddEntity();
-	player->AddComponent<Player>(lio::FG_DARK_YELLOW, lio::FG_YELLOW, false);
+	lecs::Entity* player1 = &m_ecsman.entity_manager->AddEntity();
+	player1->AddComponent<Player>(lio::FG_DARK_YELLOW, lio::FG_YELLOW, false);
+
+	lecs::Entity* player2 = &m_ecsman.entity_manager->AddEntity();
+	player2->AddComponent<Player>(lio::FG_DARK_RED, lio::FG_RED, true);
 
 	lecs::Entity* pointer = &m_ecsman.entity_manager->AddEntity();
-	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5), player->id);
+	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5), player1->id);
 	pointer->GetComponent<Pointer>().active = true;
 
-	m_pieceman.SetBoard(*m_ecsman.entity_manager, player->id);
+	lecs::Entity* pointer2 = &m_ecsman.entity_manager->AddEntity();
+	pointer2->AddComponent<Pointer>(lio::Vec2i(5, 5), player2->id);
+
+	m_pieceman.SetBoard(*m_ecsman.entity_manager, player1->id);
+	m_pieceman.SetBoard(*m_ecsman.entity_manager, player2->id);
 }
 
 void Game::Update(DeltaTime dt)

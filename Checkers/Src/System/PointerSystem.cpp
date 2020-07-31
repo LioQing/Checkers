@@ -80,6 +80,9 @@ void PointerSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 		auto& board = game.board->GetComponent<Board>();
 		auto& pointer = e->GetComponent<Pointer>();
 
+		if (!pointer.active)
+			continue;
+
 		// Get tile checker pattern color
 		short col = lio::BG_GREY;
 		if ((pointer.pos.x + pointer.pos.y) % 2) col = lio::BG_DARK_GREY;
@@ -94,7 +97,7 @@ void PointerSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 				auto tx = board.pos.x + pointer.pos.x * board.tile_size + x;
 				auto ty = board.pos.y + pointer.pos.y * board.tile_size + y;
 
-				tcs.Draw(tx, ty, lio::PIXEL_THREEQUARTERS, lio::FG_GREEN + col);
+				tcs.Draw(tx, ty, lio::PIXEL_THREEQUARTERS, eman.GetEntity(pointer.player_id).GetComponent<Player>().hl_col + col);
 			}
 		}
 	}

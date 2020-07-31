@@ -64,8 +64,6 @@ void BoardSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 				{
 					auto& player = eman.GetEntity(abs(board.board.At(x, y))).GetComponent<Player>();
 
-					if (active_ptr->selected_piece) tcs.DrawString(200, 2, "HL");
-
 					auto c_col = col;
 					auto k_col = col;
 					if (active_ptr->selected_piece && active_ptr->selected_piece->GetComponent<Piece>().pos == lio::Vec2i(x, y))
@@ -125,7 +123,7 @@ void BoardSystem::Draw(lecs::EntityManager& eman, lio::TConsoleScreen& tcs)
 		}
 
 		// Draw possible moves
-		auto& player = eman.GetEntity(active_ptr->id).GetComponent<Player>();
+		auto& player = eman.GetEntity(active_ptr->player_id).GetComponent<Player>();
 		for (auto& pos : active_ptr->possible_moves)
 		{
 			short bg_col = lio::BG_GREY;

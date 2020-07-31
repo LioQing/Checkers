@@ -27,10 +27,10 @@ struct Pointer : public lecs::Component
 	lecs::Entity* selected_piece;
 	std::vector<lio::Vec2i> possible_moves;
 
-	uint32_t id;
+	uint32_t player_id;
 
 	Pointer(lio::Vec2i init_pos, uint32_t id)
-		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false), id(id)
+		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false), player_id(id)
 	{
 		possible_moves.clear();
 		cd_count.fill(0);
