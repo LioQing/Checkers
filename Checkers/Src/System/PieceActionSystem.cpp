@@ -29,6 +29,58 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 
 		if (!pointer.active) continue;
 
+		// Check if last frame ate
+		if (pointer.ate)
+		{
+			pointer.ate = false;
+			auto piece = pointer.selected_piece->GetComponent<Piece>();
+			
+			// Check if have additional targets
+			lio::Vec2i mv(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1));
+
+			auto PushPossMv = [&](bool left, bool backward)
+			{
+				if (IsPossMv(piece, 2 * (left ? -1 : 1), (backward == player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id && abs(board.board.At(mv.x, mv.y)) != 0)
+				{
+					pointer.lock = true;
+					pointer.possible_moves.push_back(mv + lio::Vec2i((left ? -1 : 1), (backward == player.up ? -1 : 1)));
+				}
+			};
+
+			PushPossMv(false, true);
+
+			mv.x -= 2;
+			PushPossMv(true, true);
+
+			if (piece.is_king)
+			{
+				// King selection
+				mv = lio::Vec2i(piece.pos.x + 1, piece.pos.y + (!player.up ? -1 : 1));
+				PushPossMv(false, false);
+
+				mv.x -= 2;
+				PushPossMv(true, false);
+			}
+		}
+
+		// Reset pointer
+		if (!pointer.lock && pointer.selected_piece && pointer.possible_moves.empty())
+		{
+			pointer.selected_piece = nullptr;
+
+			// Change active pointer
+			pointer.active = false;
+
+			for (auto& p : eman.EntityFilter<Pointer>().entities)
+			{
+				if (pointer.entity != p->id)
+				{
+					p->GetComponent<Pointer>().active = true;
+					break;
+				}
+			}
+		}
+
 		// Piece action require return key pressed
 		if (!(!pointer.select_key_down && game.InputMan().GetKeyState(InputManager::KEY_RETURN)))
 		{
@@ -50,50 +102,35 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 					pointer.selected_piece = e2;
 
 					lio::Vec2i mv(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1));
-					if (IsPossMv(piece, 1, (player.up ? -1 : 1)))
+
+					auto PushPossMv = [&](bool left, bool backward)
 					{
-						pointer.possible_moves.push_back(mv);
-					}
-					else if (IsPossMv(piece, 2, (player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id)
-					{
-						pointer.possible_moves.push_back(mv + lio::Vec2i(1, (player.up ? -1 : 1)));
-					}
+						if (IsPossMv(piece, 1 * (left ? -1 : 1), (backward == player.up ? -1 : 1)))
+						{
+							pointer.possible_moves.push_back(mv);
+						}
+						else if (IsPossMv(piece, 2 * (left ? -1 : 1), (backward == player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id && abs(board.board.At(mv.x, mv.y)) != 0)
+						{
+							pointer.possible_moves.push_back(mv + lio::Vec2i(1 * (left ? -1 : 1), (backward == player.up ? -1 : 1)));
+						}
+					};
+
+					PushPossMv(false, true);
 
 					mv.x -= 2;
-					if (IsPossMv(piece, -1, (player.up ? -1 : 1)))
-					{
-						pointer.possible_moves.push_back(mv);
-					}
-					else if (IsPossMv(piece, -2, (player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id)
-					{
-						pointer.possible_moves.push_back(mv + lio::Vec2i(-1, (player.up ? -1 : 1)));
-					}
+					PushPossMv(true, true);
 
 					if (!piece.is_king) break;
 
 					// King selection
 					mv = lio::Vec2i(piece.pos.x + 1, piece.pos.y + (!player.up ? -1 : 1));
-					if (IsPossMv(piece, 1, (!player.up ? -1 : 1)))
-					{
-						pointer.possible_moves.push_back(mv);
-					}
-					else if (IsPossMv(piece, 2, (!player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id)
-					{
-						pointer.possible_moves.push_back(mv + lio::Vec2i(1, (!player.up ? -1 : 1)));
-					}
+					PushPossMv(false, false);
 
 					mv.x -= 2;
-					if (IsPossMv(piece, -1, (!player.up ? -1 : 1)))
-					{
-						pointer.possible_moves.push_back(mv);
-					}
-					else if (IsPossMv(piece, -2, (!player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id)
-					{
-						pointer.possible_moves.push_back(mv + lio::Vec2i(-1, (!player.up ? -1 : 1)));
-					}
+					PushPossMv(true, false);
 				}
 				// Deselect
-				else if (pointer.selected_piece->id == e2->id)
+				else if (pointer.selected_piece->id == e2->id && !pointer.lock)
 				{
 					pointer.possible_moves.clear();
 					pointer.selected_piece = nullptr;
@@ -129,6 +166,8 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 						if (p->GetComponent<Piece>().pos == mid)
 						{
 							p->Destroy();
+							pointer.ate = true;
+							pointer.lock = false;
 							break;
 						}
 					}
@@ -141,21 +180,8 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 				if (s_piece.pos.y == (eman.GetEntity(s_piece.player_id).GetComponent<Player>().up ? 0 : board.board.height - 1))
 					s_piece.is_king = true;
 
-				// Reset pointer
-				pointer.selected_piece = nullptr;
+				// Clear poss mv
 				pointer.possible_moves.clear();
-
-				// Change active pointer
-				pointer.active = false;
-
-				for (auto& p : eman.EntityFilter<Pointer>().entities)
-				{
-					if (pointer.entity != p->id)
-					{
-						p->GetComponent<Pointer>().active = true;
-						break;
-					}
-				}
 
 				break;
 			}
