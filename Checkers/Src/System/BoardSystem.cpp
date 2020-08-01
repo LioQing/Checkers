@@ -3,9 +3,40 @@
 #include <cassert>
 
 #include "../Components/Components.h"
+#include "../Game.h"
+
+extern Game game;
 
 void BoardSystem::LateUpdate(lecs::EntityManager& eman, lecs::EventManager& evman, DeltaTime dt)
 {
+	// Check win conditions
+	uint32_t players[2] = { 0 };
+	for (auto& p : eman.EntityFilter<Piece>().entities)
+	{
+		// Check still have pieces
+		for (auto i = 0; i < 2; ++i)
+		{
+			if (players[i] == 0)
+			{
+				players[i] = p->id;
+				break;
+			}
+			else if (players[i] == p->id)
+			{
+				continue;
+			}
+		}
+	}
+
+	for (auto i = 0; i < 2; ++i)
+	{
+		if (players[i] == 0)
+		{
+			game.Finish();
+			break;
+		}
+	}
+
 	// Sync board
 	for (auto& e : eman.EntityFilter<Board>().entities)
 	{

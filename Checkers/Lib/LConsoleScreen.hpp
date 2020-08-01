@@ -136,7 +136,6 @@ namespace lio
 	public:
 
 		TConsoleScreen();
-		~TConsoleScreen();
 
 		void Init(int width, int height, int size = 16, std::string title = "TConsoleScreen", short background_col = 0x0000);
 

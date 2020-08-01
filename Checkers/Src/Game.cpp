@@ -8,7 +8,7 @@ Game::Game()
 	finished = false;
 }
 
-void Game::Init(int width, int height, int size, short background_col)
+void Game::Init(int width, int height, int size, short background_col, bool ten)
 {
 	m_tcs.Init(width, height, size, "Checkers", background_col);
 
@@ -17,7 +17,10 @@ void Game::Init(int width, int height, int size, short background_col)
 	m_ecsman.system_manager->AddSystem<PieceActionSystem>();
 
 	board = &m_ecsman.entity_manager->AddEntity();
-	board->AddComponent<Board>(lio::Vec2i(5, 3), 8, 8, 11);
+	if (!ten)
+		board->AddComponent<Board>(lio::Vec2i(5, 3), 8, 8, 11);
+	else
+		board->AddComponent<Board>(lio::Vec2i(5, 3), 10, 10, 9);
 
 	lecs::Entity* player1 = &m_ecsman.entity_manager->AddEntity();
 	player1->AddComponent<Player>(lio::FG_DARK_YELLOW, lio::FG_YELLOW, false);
@@ -78,7 +81,7 @@ bool Game::HasFinished()
 	return finished.load();
 }
 
-lio::TConsoleScreen& Game::TCS()
+void Game::Finish()
 {
-	return m_tcs;
+	finished.store(true);
 }

@@ -219,24 +219,6 @@ namespace lecs
 			return *u_ptr.get();
 		}
 
-		// pass in component
-		template <typename T>
-		T& AddComponent(const T& c)
-		{
-			c->entity = id;
-			std::unique_ptr<Component> u_ptr{ c };
-
-			components[Component::GetComponentTypeID<T>()] = std::move(u_ptr);
-			component_bitset[Component::GetComponentTypeID<T>()] = true;
-
-			logger.AddLog
-			(
-				"New component added to entity: Component " + std::string(typeid(T).name()) + " added to Entity " + std::to_string(id),
-				LT_COMPONENT, LT_CREATE
-			);
-			return *c;
-		}
-
 		// pass in contructor argument of component
 		template <typename T, typename... TArgs>
 		T& AddComponent(TArgs&&... mArgs)
@@ -354,6 +336,14 @@ namespace lecs
 			for (auto i(0u); i < n_group; ++i)
 			{
 				groups[i] = new EntityContainer(*this);
+			}
+		}
+
+		~EntityManager()
+		{
+			for (auto i(0u); i < n_group; ++i)
+			{
+				delete groups[i];
 			}
 		}
 
@@ -825,17 +815,11 @@ namespace lecs
 			system_manager = new SystemManager(entity_manager, event_manager);
 		}
 
-		ECSManagers& operator=(const ECSManagers& other)
+		~ECSManagers()
 		{
-			if (entity_manager) delete entity_manager;
-			if (event_manager) delete event_manager;
-			if (system_manager) delete system_manager;
-
-			entity_manager = other.entity_manager;
-			event_manager = other.event_manager;
-			system_manager = other.system_manager;
-
-			return *this;
+			delete entity_manager;
+			delete system_manager;
+			delete event_manager;
 		}
 
 		// update all ecs managers

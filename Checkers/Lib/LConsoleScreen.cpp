@@ -408,11 +408,6 @@ lio::TConsoleScreen::TConsoleScreen()
 {
 }
 
-lio::TConsoleScreen::~TConsoleScreen()
-{
-	delete[] m_bufscrn;
-}
-
 void lio::TConsoleScreen::Init(int width, int height, int size, std::string title, short background_col)
 {
 	LConsoleScreen::Init(width * 2, height, size / 2, size, title, background_col);

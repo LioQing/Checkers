@@ -25,12 +25,12 @@ public:
 
 	Game();
 
-	void Init(int width, int height, int size = 16, short background_col = 0x0000);
+	void Init(int width, int height, int size = 16, short background_col = 0x0000, bool ten = false);
 	void Update(DeltaTime dt);
 	void Draw();
 
 	InputManager& InputMan();
 
 	bool HasFinished();
-	lio::TConsoleScreen& TCS();
+	void Finish();
 };
