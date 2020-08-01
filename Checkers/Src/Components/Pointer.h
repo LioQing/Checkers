@@ -17,6 +17,7 @@ struct Pointer : public lecs::Component
 
 	bool ate;
 	bool lock;
+	bool moved;
 
 	bool active;
 	lio::Vec2i pos;
@@ -33,7 +34,7 @@ struct Pointer : public lecs::Component
 	uint32_t player_id;
 
 	Pointer(lio::Vec2i init_pos, uint32_t id)
-		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false), player_id(id), lock(false), ate(false)
+		: pos(init_pos), select_key_down(false), selected_piece(nullptr), active(false), player_id(id), lock(false), ate(false), moved(false)
 	{
 		possible_moves.clear();
 		cd_count.fill(0);

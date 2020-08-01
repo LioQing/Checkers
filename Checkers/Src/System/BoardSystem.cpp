@@ -10,20 +10,69 @@ extern Game game;
 void BoardSystem::LateUpdate(lecs::EntityManager& eman, lecs::EventManager& evman, DeltaTime dt)
 {
 	// Check win conditions
+	auto& board = game.board->GetComponent<Board>();
+
+	auto IsPossMv = [&board](Piece& piece, int x, int y)
+	{
+		if (x > 0 && piece.pos.x + x >= board.board.width) return false;
+		if (x < 0 && piece.pos.x + x < 0) return false;
+		if (y > 0 && piece.pos.y + y >= board.board.height) return false;
+		if (y < 0 && piece.pos.y + y < 0) return false;
+		if (board.board.At(piece.pos.x + x, piece.pos.y + y) != 0) return false;
+
+		return true;
+	};
+
 	uint32_t players[2] = { 0 };
 	for (auto& p : eman.EntityFilter<Piece>().entities)
 	{
+		auto& piece = p->GetComponent<Piece>();
+		auto& player = eman.GetEntity(piece.player_id).GetComponent<Player>();
+
+		lio::Vec2i mv(piece.pos.x + 1, piece.pos.y + (player.up ? -1 : 1));
+		auto PushPossMv = [&](bool left, bool backward)
+		{
+			if (IsPossMv(piece, 1 * (left ? -1 : 1), (backward == player.up ? -1 : 1)))
+			{
+				return true;
+			}
+			else if (IsPossMv(piece, 2 * (left ? -1 : 1), (backward == player.up ? -2 : 2)) && abs(board.board.At(mv.x, mv.y)) != piece.player_id && abs(board.board.At(mv.x, mv.y)) != 0)
+			{
+				return true;
+			}
+			return false;
+		};
+
+		auto CanMv = [&]()
+		{
+			if (PushPossMv(false, true)) return true;
+
+			mv.x -= 2;
+			if (PushPossMv(true, true)) return true;
+
+			if (!piece.is_king) return false;
+
+			// King selection
+			mv = lio::Vec2i(piece.pos.x + 1, piece.pos.y + (!player.up ? -1 : 1));
+			if (PushPossMv(false, false)) return true;
+
+			mv.x -= 2;
+			if (PushPossMv(true, false)) return true;
+		};
+		
+		if (!CanMv()) continue;
+
 		// Check still have pieces
 		for (auto i = 0; i < 2; ++i)
 		{
 			if (players[i] == 0)
 			{
-				players[i] = p->id;
+				players[i] = piece.player_id;
 				break;
 			}
-			else if (players[i] == p->id)
+			else if (players[i] == piece.player_id)
 			{
-				continue;
+				break;
 			}
 		}
 	}

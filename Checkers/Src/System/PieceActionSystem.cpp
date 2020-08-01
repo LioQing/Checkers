@@ -64,7 +64,7 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 		}
 
 		// Reset pointer
-		if (!pointer.lock && pointer.selected_piece && pointer.possible_moves.empty())
+		if (!pointer.lock && pointer.selected_piece && pointer.possible_moves.empty() && pointer.moved)
 		{
 			pointer.selected_piece = nullptr;
 
@@ -80,6 +80,7 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 				}
 			}
 		}
+		pointer.moved = false;
 
 		// Piece action require return key pressed
 		if (!(!pointer.select_key_down && game.InputMan().GetKeyState(InputManager::KEY_RETURN)))
@@ -175,6 +176,7 @@ void PieceActionSystem::EarlyUpdate(lecs::EntityManager& eman, lecs::EventManage
 
 				// Move
 				s_piece.pos = poss_mv;
+				pointer.moved = true;
 
 				// Become king
 				if (s_piece.pos.y == (eman.GetEntity(s_piece.player_id).GetComponent<Player>().up ? 0 : board.board.height - 1))

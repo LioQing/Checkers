@@ -30,19 +30,32 @@ void Game::Init(int width, int height, int size, short background_col, bool ten)
 
 	lecs::Entity* pointer = &m_ecsman.entity_manager->AddEntity();
 	pointer->AddComponent<Pointer>(lio::Vec2i(5, 5), player1->id);
-	pointer->GetComponent<Pointer>().active = true;
 
 	lecs::Entity* pointer2 = &m_ecsman.entity_manager->AddEntity();
 	pointer2->AddComponent<Pointer>(lio::Vec2i(5, 5), player2->id);
 
+	pointer2->GetComponent<Pointer>().active = true;
+
 	//lecs::Entity* piece = &m_ecsman.entity_manager->AddEntity();
-	//piece->AddComponent<Piece>(lio::Vec2i(3, 2), player1->id);
+	//piece->AddComponent<Piece>(lio::Vec2i(3, 6), player2->id);
 
 	//lecs::Entity* piece2 = &m_ecsman.entity_manager->AddEntity();
-	//piece2->AddComponent<Piece>(lio::Vec2i(4, 3), player2->id);
+	//piece2->AddComponent<Piece>(lio::Vec2i(3, 4), player1->id);
 
 	//lecs::Entity* piece3 = &m_ecsman.entity_manager->AddEntity();
-	//piece3->AddComponent<Piece>(lio::Vec2i(4, 5), player2->id);
+	//piece3->AddComponent<Piece>(lio::Vec2i(2, 3), player1->id);
+
+	//lecs::Entity* piece4 = &m_ecsman.entity_manager->AddEntity();
+	//piece4->AddComponent<Piece>(lio::Vec2i(5, 4), player1->id);
+
+	//lecs::Entity* piece5 = &m_ecsman.entity_manager->AddEntity();
+	//piece5->AddComponent<Piece>(lio::Vec2i(6, 3), player1->id);
+
+	//lecs::Entity* piece6 = &m_ecsman.entity_manager->AddEntity();
+	//piece6->AddComponent<Piece>(lio::Vec2i(0, 0), player1->id);
+
+	//lecs::Entity* piece7 = &m_ecsman.entity_manager->AddEntity();
+	//piece7->AddComponent<Piece>(lio::Vec2i(7, 0), player2->id);
 
 	m_pieceman.SetBoard(*m_ecsman.entity_manager, player1->id);
 	m_pieceman.SetBoard(*m_ecsman.entity_manager, player2->id);
